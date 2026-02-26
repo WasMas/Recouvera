@@ -1,0 +1,28 @@
+{
+  "name": "recouvera",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/WasMas/Recouvera#readme",
+  "bugs": {
+    "url": "https://github.com/WasMas/Recouvera/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WasMas/Recouvera.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "joi": "^18.0.2",
+    "mongoose": "^9.2.3"
+  },
+  "devDependencies": {
+    "jest": "^30.2.0"
+  }
+}
