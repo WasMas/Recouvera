@@ -14,5 +14,5 @@ export const getInvoices = async (req, res) => {
         res.status(200).json(invoices);
     } catch (error) {
         res.status(500).json({ message: error.message });
-    }   
+    }
 };
