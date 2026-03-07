@@ -3,6 +3,8 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 const ROLES = require("../shared/enums/roles");
+const validate = require("../middlewares/validate.middleware");
+const { signupValidator, signinValidator } = require("../validators/auth.validator");
 
 const router = express.Router();
 
@@ -37,7 +39,7 @@ const router = express.Router();
  *       201:
  *         description: User created successfully
  */
-router.post("/signup", async (req, res) => {
+router.post("/signup", validate(signupValidator), async (req, res) => {
   try {
     const { first_name, last_name, email, password } = req.body;
 
@@ -90,7 +92,7 @@ router.post("/signup", async (req, res) => {
  *       200:
  *         description: Login successful
  */
-router.post("/signin", async (req, res) => {
+router.post("/signin", validate(signinValidator), async (req, res) => {
   try {
     const { email, password } = req.body;
 
