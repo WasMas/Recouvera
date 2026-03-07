@@ -53,7 +53,7 @@ router.post("/signup", async (req, res) => {
       last_name,
       email,
       password: hashedPassword,
-      role: ROLES.USER
+      roles: ROLES.USER
     });
 
     res.status(201).json({
