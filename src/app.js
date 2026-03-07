@@ -1,6 +1,7 @@
 const express = require("express");
 const setupSwagger = require("./config/swagger");
 const invoiceRoutes = require("./routes/invoice.routes");
+const paymentRoutes = require("./routes/payment.routes");
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.use("/api/user", userRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/clients", clientRoutes);
 app.use("/api/invoices", invoiceRoutes);
+app.use("/api/payments", paymentRoutes);
 
 // Swagger
 setupSwagger(app);
