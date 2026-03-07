@@ -1,13 +1,13 @@
 const express = require("express");
 const setupSwagger = require("./config/swagger");
-const invoiceRoutes = require("./routes/invoice.routes");
-const paymentRoutes = require("./routes/payment.routes");
 
 const app = express();
 
 const userRoutes = require("./routes/user.routes");
 const authRoutes = require("./routes/auth.routes");
 const clientRoutes = require("./routes/client.routes");
+const invoiceRoutes = require("./routes/invoice.routes");
+const paymentRoutes = require("./routes/payment.routes");
 
 app.use(express.json());
 
