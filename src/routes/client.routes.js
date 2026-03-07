@@ -1,6 +1,7 @@
 const express = require("express");
 const Client = require("../models/client");
 const protect = require("../middlewares/auth.middleware");
+const validate = require("../middlewares/validate.middleware");
 const { clientValidator } = require("../validators/client.validator");
 
 const router = express.Router();
@@ -36,25 +37,21 @@ const router = express.Router();
  *       201:
  *         description: Client created successfully
  */
-router.post("/", protect, async (req, res) => {
-  try {
+router.post(
+  "/",
+  protect,
+  validate(clientValidator),
+  async (req, res) => {
+    try {
+      
+      const client = await Client.create(req.body);
 
-    const { error } = clientValidator.validate(req.body);
+      res.status(201).json(client);
 
-    if (error) {
-      return res.status(400).json({
-        message: error.details[0].message
-      });
+    } catch (err) {
+      res.status(500).json({ message: err.message });
     }
-
-    const client = await Client.create(req.body);
-
-    res.status(201).json(client);
-
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
+  });
 
 /**
  * @swagger
