@@ -1,6 +1,7 @@
 const express = require("express");
 const Client = require("../models/client");
 const protect = require("../middlewares/auth.middleware");
+const { clientValidator } = require("../validators/client.validator");
 
 const router = express.Router();
 
@@ -37,8 +38,19 @@ const router = express.Router();
  */
 router.post("/", protect, async (req, res) => {
   try {
+
+    const { error } = clientValidator.validate(req.body);
+
+    if (error) {
+      return res.status(400).json({
+        message: error.details[0].message
+      });
+    }
+
     const client = await Client.create(req.body);
+
     res.status(201).json(client);
+
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
