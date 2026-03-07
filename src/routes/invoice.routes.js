@@ -4,6 +4,37 @@ const protect = require("../middlewares/auth.middleware");
 
 const router = express.Router();
 
+/**
+ * @swagger
+ * /api/invoices:
+ *   post:
+ *     summary: Create new invoice
+ *     tags: [Invoices]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - client
+ *               - amount
+ *               - dueDate
+ *             properties:
+ *               client:
+ *                 type: string
+ *                 description: Client ID
+ *               amount:
+ *                 type: number
+ *               dueDate:
+ *                 type: string
+ *                 format: date
+ *     responses:
+ *       201:
+ *         description: Invoice created successfully
+ */
 router.post("/", protect, async (req, res) => {
   try {
 
@@ -16,6 +47,18 @@ router.post("/", protect, async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /api/invoices:
+ *   get:
+ *     summary: Get all invoices
+ *     tags: [Invoices]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of invoices
+ */
 router.get("/", protect, async (req, res) => {
   try {
 
@@ -28,6 +71,24 @@ router.get("/", protect, async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /api/invoices/{id}:
+ *   get:
+ *     summary: Get invoice by ID
+ *     tags: [Invoices]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Invoice retrieved successfully
+ */
 router.get("/:id", protect, async (req, res) => {
   try {
 
@@ -44,6 +105,15 @@ router.get("/:id", protect, async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /api/invoices/{id}:
+ *   put:
+ *     summary: Update invoice
+ *     tags: [Invoices]
+ *     security:
+ *       - bearerAuth: []
+ */
 router.put("/:id", protect, async (req, res) => {
   try {
 
@@ -60,6 +130,15 @@ router.put("/:id", protect, async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /api/invoices/{id}:
+ *   delete:
+ *     summary: Delete invoice
+ *     tags: [Invoices]
+ *     security:
+ *       - bearerAuth: []
+ */
 router.delete("/:id", protect, async (req, res) => {
   try {
 
