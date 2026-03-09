@@ -1,6 +1,8 @@
 const express = require("express");
 const Invoice = require("../models/invoice");
 const protect = require("../middlewares/auth.middleware");
+const validate = require("../middlewares/validate.middleware");
+const { createInvoiceValidator } = require("../validators/invoice.validator");
 
 const router = express.Router();
 
@@ -35,7 +37,7 @@ const router = express.Router();
  *       201:
  *         description: Invoice created successfully
  */
-router.post("/", protect, async (req, res) => {
+router.post("/", protect, validate(createInvoiceValidator), async (req, res) => {
   try {
 
     const invoice = await Invoice.create(req.body);

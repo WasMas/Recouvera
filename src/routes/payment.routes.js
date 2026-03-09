@@ -2,6 +2,8 @@ const express = require("express");
 const Payment = require("../models/payment");
 const Invoice = require("../models/invoice");
 const protect = require("../middlewares/auth.middleware");
+const validate = require("../middlewares/validate.middleware");
+const { createPaymentValidator } = require("../validators/payment.validator");
 
 const router = express.Router();
 
@@ -36,42 +38,46 @@ const router = express.Router();
  *       201:
  *         description: Payment registered successfully
  */
-router.post("/", protect, async (req, res) => {
-  try {
+router.post(
+  "/",
+  protect,
+  validate(createPaymentValidator),
+  async (req, res) => {
+    try {
 
-    const { invoice, amount, method, note } = req.body;
+      const { invoice, amount, method, note } = req.body;
 
-    const invoiceDoc = await Invoice.findById(invoice);
+      const invoiceDoc = await Invoice.findById(invoice);
 
-    if (!invoiceDoc) {
-      return res.status(404).json({ message: "Invoice not found" });
+      if (!invoiceDoc) {
+        return res.status(404).json({ message: "Invoice not found" });
+      }
+
+      const payment = await Payment.create({
+        invoice,
+        amount,
+        method,
+        note
+      });
+
+      const payments = await Payment.find({ invoice });
+
+      const totalPaid = payments.reduce((sum, p) => sum + p.amount, 0);
+
+      if (totalPaid >= invoiceDoc.amount) {
+        invoiceDoc.status = "paid";
+      } else if (totalPaid > 0) {
+        invoiceDoc.status = "partial";
+      }
+
+      await invoiceDoc.save();
+
+      res.status(201).json(payment);
+
+    } catch (err) {
+      res.status(500).json({ message: err.message });
     }
-
-    const payment = await Payment.create({
-      invoice,
-      amount,
-      method,
-      note
-    });
-
-    const payments = await Payment.find({ invoice });
-
-    const totalPaid = payments.reduce((sum, p) => sum + p.amount, 0);
-
-    if (totalPaid >= invoiceDoc.amount) {
-      invoiceDoc.status = "paid";
-    } else if (totalPaid > 0) {
-      invoiceDoc.status = "partial";
-    }
-
-    await invoiceDoc.save();
-
-    res.status(201).json(payment);
-
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
+  });
 
 /**
  * @swagger
