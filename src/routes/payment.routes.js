@@ -53,6 +53,10 @@ router.post(
         return res.status(404).json({ message: "Invoice not found" });
       }
 
+      const result = await Payment.aggregate([
+        { $match: { invoice: invoiceDoc._id } },
+        { $group: { _id: null, total: { $sum: "$amount" } } }
+      ]);
       const payment = await Payment.create({
         invoice,
         amount,
