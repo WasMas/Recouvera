@@ -53,6 +53,21 @@ router.post(
         return res.status(404).json({ message: "Invoice not found" });
       }
 
+      const result = await Payment.aggregate([
+        { $match: { invoice: invoiceDoc._id } },
+        { $group: { _id: null, total: { $sum: "$amount" } } }
+      ]);
+
+      const totalPaid = result[0]?.total || 0;
+      const newTotal = totalPaid + amount;
+
+      if (newTotal > invoiceDoc.amount) {
+        return res.status(400).json({
+          message: "Payment exceeds remaining invoice balance",
+          remaining: invoiceDoc.amount - totalPaid
+        });
+      }
+
       const payment = await Payment.create({
         invoice,
         amount,
@@ -60,13 +75,9 @@ router.post(
         note
       });
 
-      const payments = await Payment.find({ invoice });
-
-      const totalPaid = payments.reduce((sum, p) => sum + p.amount, 0);
-
-      if (totalPaid >= invoiceDoc.amount) {
+      if (newTotal === invoiceDoc.amount) {
         invoiceDoc.status = "paid";
-      } else if (totalPaid > 0) {
+      } else if (newTotal > 0) {
         invoiceDoc.status = "partial";
       }
 
@@ -77,7 +88,8 @@ router.post(
     } catch (err) {
       res.status(500).json({ message: err.message });
     }
-  });
+  }
+);
 
 /**
  * @swagger
