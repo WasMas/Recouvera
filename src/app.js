@@ -1,6 +1,8 @@
 const express = require("express");
 const setupSwagger = require("./config/swagger");
+const connectDB = require("./config/db");
 
+connectDB();
 const app = express();
 
 const userRoutes = require("./routes/user.routes");
@@ -28,5 +30,11 @@ setupSwagger(app);
 app.get("/", (req, res) => {
   res.status(200).json({ message: "HIIII" });
 });
+
+
+//express app
+if (process.env.NODE_ENV !== "test") {
+  app.listen(3000, () => console.log("Server running"));
+}
 
 module.exports = app;
